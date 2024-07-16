@@ -23,6 +23,7 @@ class Paper: GameObject{
         let action = SKAction.moveTo(x: 860, duration: 1)
         let remove = SKAction.removeFromParent()
         let sequence = SKAction.sequence([action,remove])
+        
         node.run(sequence)
     }
     

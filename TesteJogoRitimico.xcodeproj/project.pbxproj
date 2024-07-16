@@ -20,6 +20,7 @@
 		E5D0A4C12C33B4F2008D3E11 /* PaperFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D0A4C02C33B4F2008D3E11 /* PaperFactory.swift */; };
 		E5D0A4C32C33B9E9008D3E11 /* GameData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D0A4C22C33B9E9008D3E11 /* GameData.swift */; };
 		E5D0A4CB2C33C36C008D3E11 /* Metronomo.wav in Resources */ = {isa = PBXBuildFile; fileRef = E5D0A4CA2C33C36C008D3E11 /* Metronomo.wav */; };
+		E5D0A4ED2C40645A008D3E11 /* SceneTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D0A4EC2C40645A008D3E11 /* SceneTwo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		E5D0A4C02C33B4F2008D3E11 /* PaperFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperFactory.swift; sourceTree = "<group>"; };
 		E5D0A4C22C33B9E9008D3E11 /* GameData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameData.swift; sourceTree = "<group>"; };
 		E5D0A4CA2C33C36C008D3E11 /* Metronomo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Metronomo.wav; sourceTree = "<group>"; };
+		E5D0A4EC2C40645A008D3E11 /* SceneTwo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneTwo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 		E59F105F2C2CF83400D34242 /* TesteJogoRitimico */ = {
 			isa = PBXGroup;
 			children = (
+				E5D0A4EC2C40645A008D3E11 /* SceneTwo.swift */,
 				E59F10602C2CF83400D34242 /* TesteJogoRitimicoApp.swift */,
 				E59F10622C2CF83400D34242 /* ContentView.swift */,
 				E59F106E2C2CF86700D34242 /* Scene.swift */,
@@ -187,6 +190,7 @@
 				E5D0A4BD2C33B226008D3E11 /* Paper.swift in Sources */,
 				E59F106F2C2CF86700D34242 /* Scene.swift in Sources */,
 				E5D0A4B72C2F4C15008D3E11 /* GameScenePoc.swift in Sources */,
+				E5D0A4ED2C40645A008D3E11 /* SceneTwo.swift in Sources */,
 				E5D0A4C12C33B4F2008D3E11 /* PaperFactory.swift in Sources */,
 				E5D0A4BB2C33AFA6008D3E11 /* GameObject.swift in Sources */,
 				E5D0A4C32C33B9E9008D3E11 /* GameData.swift in Sources */,

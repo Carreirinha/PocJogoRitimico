@@ -9,7 +9,7 @@ import Foundation
 import SpriteKit
 import AVFoundation
 
-class GameScenePoc: SKScene {
+class GameScenePoc: SKScene, SKPhysicsContactDelegate {
     
     var gameData: GameData?
     
@@ -25,20 +25,25 @@ class GameScenePoc: SKScene {
     let actionWait: SKAction = SKAction.wait(forDuration: 0.2)
     let remove: SKAction = SKAction.removeFromParent()
     
-    var bpm: Int = 120
-    var beatCount:Int = 0
+    var bpm: Float = 120
+    var sec_per_beat: Float = 0
     var timerIntervalPerBeat: TimeInterval = 0
     var musicDuration = 0
+    var beats_in_music: Int = 0
+    var beat_playing: Int = 1
     
     var player: AVAudioPlayer?
     var play: Bool = false
     var renderPaper = true
     var objectCount = 0
     var scorePoints = 0
-    
+    var cur_time: Float = 0
     var gameState = GameState.menu
     
+    var node: SKShapeNode = SKShapeNode()
     let PlayBttn: SKNode = SKNode()
+    var isTouching: Bool = false
+    
     
     enum GameState {
         case menu
@@ -47,6 +52,17 @@ class GameScenePoc: SKScene {
     
     override func didMove(to view: SKView) {
         setMenu()
+        physicsWorld.contactDelegate = self
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        if contact.bodyA.categoryBitMask == 1 || contact.bodyB.categoryBitMask == 1 {
+            isTouching = true
+            print("tocou")
+        }else{
+            isTouching = false
+            print("n tocou")
+        }
     }
     
     func startGame(){
@@ -59,6 +75,20 @@ class GameScenePoc: SKScene {
         player?.prepareToPlay()
         createPaper()
         setScore()
+        sec_per_beat = 60/bpm
+        beats_in_music = Int(Float(player!.duration) * sec_per_beat)
+        //aqui eu sei quantos beats vao ter na musica
+        node = SKShapeNode(rectOf: CGSize(width: 100, height: 100))
+        node.position.x = UIScreen.main.bounds.width / 2
+        node.position.y = UIScreen.main.bounds.height / 2
+        node.fillColor = .clear
+        node.strokeColor = .red
+        node.physicsBody = SKPhysicsBody(rectangleOf:CGSize(width: 100, height: 100))
+        node.physicsBody?.isDynamic = false
+        node.physicsBody?.contactTestBitMask = 1
+        node.physicsBody?.categoryBitMask = 2
+        node.zPosition = 0
+        addChild(node)
     }
     
     func setMenu(){
@@ -90,6 +120,7 @@ class GameScenePoc: SKScene {
         scorePoints = 0
         scoreLabel = SKLabelNode(text: "Score: 0")
         gameData?.objects.removeAll()
+        
     }
     
     func createPaper(){
@@ -102,16 +133,18 @@ class GameScenePoc: SKScene {
                 play = true
                 player?.play()
             }
+
             
-            if floor(player!.currentTime.truncatingRemainder(dividingBy: 2)) == 1 && renderPaper && objectCount != 0{
+            
+            cur_time = Float(player!.currentTime + 0.5)
+            
+            if floor(cur_time.truncatingRemainder(dividingBy: 2)) == 0 && renderPaper && objectCount != 0{
                 objectCount -= 1
                 gameData?.create(factory: PaperFactory())
-                print("device clock:\(floor(player!.deviceCurrentTime))")
-                print("player clock:\(floor(player!.currentTime))")
-                print(player?.rate)
                 renderLast()
                 renderPaper = false
-            }else if floor(player!.currentTime.truncatingRemainder(dividingBy: 2)) == 0{
+                
+            }else if floor(cur_time.truncatingRemainder(dividingBy: 2)) == 1{
                 renderPaper = true
             }
             
@@ -126,7 +159,7 @@ class GameScenePoc: SKScene {
             
             if let objects = gameData?.objects {
                 
-                for (index, object) in objects.enumerated() {
+                for  object in objects {
                     if let paper = object as? Paper {
                         paper.update()
                     }
@@ -138,7 +171,10 @@ class GameScenePoc: SKScene {
     
     func renderLast(){
         if let objects = gameData?.objects {
-            
+            objects.last!.node.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 100, height: 100))
+            objects.last!.node.physicsBody?.isDynamic = false
+            objects.last!.node.physicsBody?.categoryBitMask = 1
+            objects.last!.node.physicsBody?.usesPreciseCollisionDetection = true
             addChild(objects.last!.node)
         }
     }
@@ -174,7 +210,7 @@ class GameScenePoc: SKScene {
                 
                 if let paper = objects2.last as? Paper{
                     
-                    if paper.node.position.x >= 400 && paper.node.position.x <= 500{
+                    if isTouching{
                         
                         paper.touched = true
                         let generator = UIImpactFeedbackGenerator(style: .soft)
@@ -203,7 +239,7 @@ class GameScenePoc: SKScene {
     }
     
     func setHands(){
-        stampUp.position = CGPoint(x: background.position.x + 200, y: background.position.y)
+        stampUp.position = CGPoint(x: background.position.x + 150, y: background.position.y)
         stampUp.zPosition = 1
         
         addChild(stampUp)
@@ -215,11 +251,11 @@ class GameScenePoc: SKScene {
         addChild(stampDown)
         
     }
-    
-    func setTime(){
-        beatCount = bpm/60
-        timerIntervalPerBeat = TimeInterval(1/beatCount)
-    }
+//    
+//    func setTime(){
+//        sec_per_beat = Float(bpm/60)
+//        timerIntervalPerBeat = TimeInterval(1/sec_per_beat)
+//    }
     
     func setScore(){
         scoreLabel.position = CGPoint(x: 730, y: 25)
