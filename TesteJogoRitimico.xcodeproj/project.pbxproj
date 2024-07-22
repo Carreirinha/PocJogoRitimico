@@ -11,10 +11,10 @@
 		9F0704CA2C45B41F005FF461 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0704C92C45B41F005FF461 /* Note.swift */; };
 		9F0704CE2C45B7D6005FF461 /* NoteObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0704CD2C45B7D6005FF461 /* NoteObject.swift */; };
 		9F0704D02C45B83C005FF461 /* NoteFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0704CF2C45B83C005FF461 /* NoteFactory.swift */; };
-		9F0704D42C45BAB1005FF461 /* twoLane.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9F0704D32C45BAB1005FF461 /* twoLane.wav */; };
 		9F4DE0C82C46DDB1002B9622 /* NFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F4DE0C72C46DDB1002B9622 /* NFactory.swift */; };
 		9F5A7D9E2C405FA6003E4D41 /* MenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5A7D9D2C405FA6003E4D41 /* MenuScene.swift */; };
 		9F5A7DA02C405FEB003E4D41 /* MusicScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5A7D9F2C405FEB003E4D41 /* MusicScene.swift */; };
+		9F6C49A12C4ED94800363518 /* twoLane.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9F6C49A02C4ED94800363518 /* twoLane.wav */; };
 		E59F10612C2CF83400D34242 /* TesteJogoRitimicoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59F10602C2CF83400D34242 /* TesteJogoRitimicoApp.swift */; };
 		E59F10632C2CF83400D34242 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E59F10622C2CF83400D34242 /* ContentView.swift */; };
 		E59F10652C2CF83600D34242 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E59F10642C2CF83600D34242 /* Assets.xcassets */; };
@@ -34,10 +34,10 @@
 		9F0704C92C45B41F005FF461 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		9F0704CD2C45B7D6005FF461 /* NoteObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteObject.swift; sourceTree = "<group>"; };
 		9F0704CF2C45B83C005FF461 /* NoteFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteFactory.swift; sourceTree = "<group>"; };
-		9F0704D32C45BAB1005FF461 /* twoLane.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = twoLane.wav; sourceTree = "<group>"; };
 		9F4DE0C72C46DDB1002B9622 /* NFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFactory.swift; sourceTree = "<group>"; };
 		9F5A7D9D2C405FA6003E4D41 /* MenuScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuScene.swift; sourceTree = "<group>"; };
 		9F5A7D9F2C405FEB003E4D41 /* MusicScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicScene.swift; sourceTree = "<group>"; };
+		9F6C49A02C4ED94800363518 /* twoLane.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = twoLane.wav; sourceTree = "<group>"; };
 		E59F105D2C2CF83400D34242 /* TesteJogoRitimico.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TesteJogoRitimico.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E59F10602C2CF83400D34242 /* TesteJogoRitimicoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TesteJogoRitimicoApp.swift; sourceTree = "<group>"; };
 		E59F10622C2CF83400D34242 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -92,7 +92,7 @@
 				E5D0A4EB2C405B04008D3E11 /* Models */,
 				E5D0A4EA2C405AEE008D3E11 /* Factory */,
 				E5D0A4C22C33B9E9008D3E11 /* GameData.swift */,
-				9F0704D32C45BAB1005FF461 /* twoLane.wav */,
+				9F6C49A02C4ED94800363518 /* twoLane.wav */,
 				E5D0A4CA2C33C36C008D3E11 /* Metronomo.wav */,
 				E59F10702C2D1F6800D34242 /* drums.wav */,
 				E59F10642C2CF83600D34242 /* Assets.xcassets */,
@@ -189,9 +189,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F0704D42C45BAB1005FF461 /* twoLane.wav in Resources */,
 				E59F10682C2CF83600D34242 /* Preview Assets.xcassets in Resources */,
 				E59F10712C2D1F6800D34242 /* drums.wav in Resources */,
+				9F6C49A12C4ED94800363518 /* twoLane.wav in Resources */,
 				E5D0A4CB2C33C36C008D3E11 /* Metronomo.wav in Resources */,
 				E59F10652C2CF83600D34242 /* Assets.xcassets in Resources */,
 			);
