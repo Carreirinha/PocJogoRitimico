@@ -15,7 +15,7 @@ class Music2Scene: SKScene{
     
     var backgroundNotes: SKSpriteNode = SKSpriteNode(imageNamed: "rectangleBackground")
     var pinkButton: SKSpriteNode = SKSpriteNode(imageNamed: "pinkButton")
-    var blueButton: SKSpriteNode = SKSpriteNode(imageNamed: "BlueButton")
+    var blueButton: SKSpriteNode = SKSpriteNode(imageNamed: "blueButton")
     var greatArea: SKShapeNode = SKShapeNode()
     var goodArea: SKShapeNode = SKShapeNode()
     var finalArea: SKShapeNode = SKShapeNode()
@@ -181,7 +181,7 @@ class Music2Scene: SKScene{
         }
         
         //Aqui eu to antecipando o spawn das notas
-        if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat * 3 + 0.3)){
+        if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat * 2)){
         
             play = true
             

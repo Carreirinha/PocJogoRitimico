@@ -18,6 +18,8 @@ class MenuScene: SKScene{
     let twoLaneScene = Music2Scene(size: UIScreen.main.bounds.size)
     
     override func didMove(to view: SKView) {
+        removeAllChildren()
+        
         setMenu()
     }
     
