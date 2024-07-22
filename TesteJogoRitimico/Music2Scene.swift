@@ -38,19 +38,8 @@ class Music2Scene: SKScene{
     var bpm: Float = 120.0
     var secondsPerBeat: Float = 0
     
-    var spawnBeat_1: Bool = false
-    var spawnBeat_1_5: Bool = false
-    var spawnBeat_2: Bool = false
-    var spawnBeat_2_5: Bool = false
-    var spawnBeat_3: Bool = false
-    var spawnBeat_3_5: Bool = false
-    var spawnBeat_4: Bool = false
-    var spawnBeat_4_5: Bool = false
-    
     var pinkButtonClicked: Bool = false
     var blueButtonClicked: Bool = false
-  
-    var finalBeat: Int = 40
     var conductorTime: [Int] = [0,5,9,13,17,21,25,29,33]
     var conductorTimeIndex: Int = 0
     var conductorBeats: [Bool] = [true,true,true,true,true,false,true,true
@@ -181,7 +170,7 @@ class Music2Scene: SKScene{
         }
         
         //Aqui eu to antecipando o spawn das notas
-        if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat * 2)){
+        if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat * 3)){
         
             play = true
             
@@ -435,14 +424,6 @@ class Music2Scene: SKScene{
         renderTime = 0
         changeTime = 0.25
         gameSecond = 0
-        spawnBeat_1 = false
-        spawnBeat_1_5 = false
-        spawnBeat_2 = false
-        spawnBeat_2_5 = false
-        spawnBeat_3 = false
-        spawnBeat_3_5 = false
-        spawnBeat_4 = false
-        spawnBeat_4_5 = false
         gameData?.objects.removeAll()
         gameData?.gameState = .menu
         
