@@ -46,6 +46,19 @@ class Music2Scene: SKScene{
     var spawnBeat_4: Bool = false
     var spawnBeat_4_5: Bool = false
     
+    var finalBeat: Int = 40
+    var conductorTime: [Int] = [0,5,9,13,17,21,25,29,33]
+    var conductorTimeIndex: Int = 0
+    var conductorBeats: [Bool] = [true,true,true,true,true,false,true,true
+                                  ,true,false,true,true,false,false,false,false
+                                  ,true,true,true,true,true,false,true,true
+                                  ,true,false,true,true,false,false,false,false
+                                  ,true,true,true,true,true,true,false,false
+                                  ,false,false,true,true,true,true,false,false
+                                  ,true,true,true,true,false,false,true,true
+                                  ,true,true,true,true,false,false,true,true
+                                  ,false,false,false,false,false,false,false]
+    var conductorBeatsIndex: Int = 0
     func playSound(_ nome: String, _ ext: String) {
         guard let url = Bundle.main.url(forResource: nome, withExtension: ext) else { return }
         
@@ -143,7 +156,7 @@ class Music2Scene: SKScene{
             self.playSound("twoLane", "wav")
         }
         
-        if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat)){
+        if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat * 2)){
             play = true
             
             noteGenerator()
@@ -189,153 +202,163 @@ class Music2Scene: SKScene{
                 self.currentMeasure = 1
             }
             
-            if beatCounter > 0{
-                spawnBeat_1 = true
-                spawnBeat_1_5 = true
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = true
-                spawnBeat_3_5 = false
-                spawnBeat_4 = true
-                spawnBeat_4_5 = true
-                //        print(spawnBeat_1)
-                //        print(spawnBeat_1_5)
-                //        print(spawnBeat_2)
-                //        print(spawnBeat_2_5)
-                //        print(spawnBeat_3)
-                //        print(spawnBeat_3_5)
-                //        print(spawnBeat_4)
-                //        print(spawnBeat_4_5)
-            }
-            if beatCounter >= 5 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = false
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = false
-                spawnBeat_3_5 = false
-                spawnBeat_4 = false
-                spawnBeat_4_5 = false
-            }
-            if beatCounter >= 9 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = true
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = true
-                spawnBeat_3_5 = false
-                spawnBeat_4 = true
-                spawnBeat_4_5 = true
-            }
-            if beatCounter >= 13 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = false
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = false
-                spawnBeat_3_5 = false
-                spawnBeat_4 = false
-                spawnBeat_4_5 = false
-            }
-            if beatCounter >= 17 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = true
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = true
-                spawnBeat_3_5 = true
-                spawnBeat_4 = false
-                spawnBeat_4_5 = false
-            }
-            if beatCounter >= 21 {
-                spawnBeat_1 = false
-                spawnBeat_1_5 = false
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = true
-                spawnBeat_3_5 = true
-                spawnBeat_4 = false
-                spawnBeat_4_5 = false
-            }
-            if beatCounter >= 25 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = true
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = false
-                spawnBeat_3_5 = false
-                spawnBeat_4 = true
-                spawnBeat_4_5 = true
-            }
-            if beatCounter >= 29 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = true
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = false
-                spawnBeat_3_5 = false
-                spawnBeat_4 = true
-                spawnBeat_4_5 = true
-            }
-            //Nao produz nota a partir daqui mesmo com a musica ainda tocando
-            if beatCounter >= 33 {
-                spawnBeat_1 = false
-                spawnBeat_1_5 = false
-                spawnBeat_2 = false
-                spawnBeat_2_5 = false
-                spawnBeat_3 = false
-                spawnBeat_3_5 = false
-                spawnBeat_4 = false
-                spawnBeat_4_5 = false
-            }
             if beatCounter >= 40 {
                 resetGame()
             }
+            
+            if conductorTime.count > (conductorTimeIndex + 1){
+                if Int(beatCounter) >= conductorTime[conductorTimeIndex + 1]{
+                    conductorTimeIndex += 1
+                    conductorBeatsIndex += 8
+                }
+            }
+            
+//            if beatCounter > 0{
+//                spawnBeat_1 = true
+//                spawnBeat_1_5 = true
+//                spawnBeat_2 = true
+//                spawnBeat_2_5 = true
+//                spawnBeat_3 = true
+//                spawnBeat_3_5 = false
+//                spawnBeat_4 = true
+//                spawnBeat_4_5 = true
+//            }
+//            if beatCounter >= 5 {
+//                spawnBeat_1 = true
+//                spawnBeat_1_5 = false
+//                spawnBeat_2 = true
+//                spawnBeat_2_5 = true
+//                spawnBeat_3 = false
+//                spawnBeat_3_5 = false
+//                spawnBeat_4 = false
+//                spawnBeat_4_5 = false
+//                
+//            }
+//            if beatCounter >= 9 {
+//                spawnBeat_1 = true
+//                spawnBeat_1_5 = true
+//                spawnBeat_2 = true
+//                spawnBeat_2_5 = true
+//                spawnBeat_3 = true
+//                spawnBeat_3_5 = false
+//                spawnBeat_4 = true
+//                spawnBeat_4_5 = true
+//                
+//            }
+//            if beatCounter >= 13 {
+//                spawnBeat_1 = true
+//                spawnBeat_1_5 = false
+//                spawnBeat_2 = true
+//                spawnBeat_2_5 = true
+//                spawnBeat_3 = false
+//                spawnBeat_3_5 = false
+//                spawnBeat_4 = false
+//                spawnBeat_4_5 = false
+//                
+//            }
+//            if beatCounter >= 17 {
+//                spawnBeat_1 = true
+//                spawnBeat_1_5 = true
+//                spawnBeat_2 = true
+//                spawnBeat_2_5 = true
+//                spawnBeat_3 = true
+//                spawnBeat_3_5 = true
+//                spawnBeat_4 = false
+//                spawnBeat_4_5 = false
+//                
+//            }
+//            if beatCounter >= 21 {
+//                spawnBeat_1 = false
+//                spawnBeat_1_5 = false
+//                spawnBeat_2 = true
+//                spawnBeat_2_5 = true
+//                spawnBeat_3 = true
+//                spawnBeat_3_5 = true
+//                spawnBeat_4 = false
+//                spawnBeat_4_5 = false
+//            }
+//            if beatCounter >= 25 {
+//                spawnBeat_1 = true
+//                spawnBeat_1_5 = true
+//                spawnBeat_2 = true
+//                spawnBeat_2_5 = true
+//                spawnBeat_3 = false
+//                spawnBeat_3_5 = false
+//                spawnBeat_4 = true
+//                spawnBeat_4_5 = true
+//                
+//            }
+//            if beatCounter >= 29 {
+//                spawnBeat_1 = true
+//                spawnBeat_1_5 = true
+//                spawnBeat_2 = true
+//                spawnBeat_2_5 = true
+//                spawnBeat_3 = false
+//                spawnBeat_3_5 = false
+//                spawnBeat_4 = true
+//                spawnBeat_4_5 = true
+//                
+//            }
+//            //Nao produz nota a partir daqui mesmo com a musica ainda tocando
+//            if beatCounter >= 33 {
+//                spawnBeat_1 = false
+//                spawnBeat_1_5 = false
+//                spawnBeat_2 = false
+//                spawnBeat_2_5 = false
+//                spawnBeat_3 = false
+//                spawnBeat_3_5 = false
+//                spawnBeat_4 = false
+//                spawnBeat_4_5 = false
+//                
+//            }
+//            if beatCounter >= 40 {
+//                resetGame()
+//            }
             switch currentMeasure{
             case 1:
-                if spawnBeat_1{
+                if conductorBeats[conductorBeatsIndex]{
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 1")
                     renderNote(type:.blueType)
                 }
             case 1.5:
-                if spawnBeat_1_5{
+                if conductorBeats[conductorBeatsIndex + 1]{
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 1.5")
                     renderNote(type:.blueType)
                 }
             case 2:
-                if spawnBeat_2{
+                if conductorBeats[conductorBeatsIndex + 2]{
                     renderNote(type:.blueType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 2")
                 }
             case 2.5:
-                if spawnBeat_2_5{
+                if conductorBeats[conductorBeatsIndex + 3]{
                     renderNote(type:.blueType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 2.5")
                 }
             case 3:
-                if spawnBeat_3{
+                if conductorBeats[conductorBeatsIndex + 4]{
                     renderNote(type:.blueType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 3")
                 }
             case 3.5:
-                if spawnBeat_3_5{
+                if conductorBeats[conductorBeatsIndex + 5]{
                     renderNote(type:.blueType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 3.5")
                 }
             case 4:
-                if spawnBeat_4{
+                if conductorBeats[conductorBeatsIndex + 6]{
                     renderNote(type:.blueType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 4")
                 }
             case 4.5:
-                if spawnBeat_4_5{
+                if conductorBeats[conductorBeatsIndex + 7]{
                     renderNote(type:.blueType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 4.5")
