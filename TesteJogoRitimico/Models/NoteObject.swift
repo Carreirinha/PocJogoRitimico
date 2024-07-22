@@ -10,7 +10,7 @@ import SpriteKit
 
 protocol NoteObject{
     var position: CGPoint { get set }
-    var node: SKShapeNode { get set }
+    var node: SKSpriteNode { get set }
     var type: colorType { get set }
 
     func update()
@@ -20,4 +20,5 @@ protocol NoteObject{
 enum colorType {
     case blueType
     case pinkType
+    case blueAndPinkType
 }
