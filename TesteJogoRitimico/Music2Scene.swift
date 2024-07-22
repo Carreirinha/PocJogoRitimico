@@ -196,27 +196,22 @@ class Music2Scene: SKScene{
             if pinkButton.frame.contains(touch.location(in: self)){
                 pinkButtonClicked = true
             }
-            
-            if pinkButtonClicked && blueButtonClicked {
-                print("dois")
-                locationNote(type: .blueAndPinkType)
-            }
-            
         }
-    
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        if pinkButtonClicked && !blueButtonClicked{
+        if pinkButtonClicked && blueButtonClicked {
+            print("dois")
+            locationNote(type: .blueAndPinkType)
+        }
+        else if pinkButtonClicked && !blueButtonClicked{
             print("rosa")
             locationNote(type: .pinkType)
             
         }
         else if blueButtonClicked && !pinkButtonClicked{
-            print("azu")
+            print("azul")
             locationNote(type: .blueType)
-            
         }
         
         blueButtonClicked = false
@@ -272,20 +267,20 @@ class Music2Scene: SKScene{
                 }
             case 3:
                 if conductorBeats[conductorBeatsIndex + 4]{
-                    renderNote(type:.blueType)
+                    renderNote(type:.pinkType)
                 }
             case 3.5:
 
                 if conductorBeats[conductorBeatsIndex + 5]{
-                    renderNote(type:.blueType)
+                    renderNote(type:.pinkType)
                 }
             case 4:
                 if conductorBeats[conductorBeatsIndex + 6]{
-                    renderNote(type:.blueType)
+                    renderNote(type:.pinkType)
                 }
             case 4.5:
                 if conductorBeats[conductorBeatsIndex + 7]{
-                    renderNote(type:.blueType)
+                    renderNote(type:.blueAndPinkType)
                 }
             default:
                 break
