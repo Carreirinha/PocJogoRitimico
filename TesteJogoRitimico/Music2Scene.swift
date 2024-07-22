@@ -15,7 +15,8 @@ class Music2Scene: SKScene{
     
     var backgroundNotes: SKSpriteNode = SKSpriteNode(imageNamed: "rectangleBackground")
     var pinkButton: SKSpriteNode = SKSpriteNode(imageNamed: "pinkButton")
-    var blueButton: SKSpriteNode = SKSpriteNode(imageNamed: "blueButton")
+    var blueButton: SKSpriteNode = SKSpriteNode(imageNamed: "BlueButton")
+    var greatArea: SKShapeNode = SKShapeNode()
     var goodArea: SKShapeNode = SKShapeNode()
     var finalArea: SKShapeNode = SKShapeNode()
     var feedbackLabel: SKLabelNode = SKLabelNode(text: "")
@@ -46,6 +47,9 @@ class Music2Scene: SKScene{
     var spawnBeat_4: Bool = false
     var spawnBeat_4_5: Bool = false
     
+    var pinkButtonClicked: Bool = false
+    var blueButtonClicked: Bool = false
+    
     func playSound(_ nome: String, _ ext: String) {
         guard let url = Bundle.main.url(forResource: nome, withExtension: ext) else { return }
         
@@ -71,8 +75,11 @@ class Music2Scene: SKScene{
     }
     
     func startGame(){
+        view?.isMultipleTouchEnabled = true
+        
         setBackground()
         setButtons()
+        setGreatArea()
         setGoodArea()
         setFinalArea()
         setLabel()
@@ -97,31 +104,43 @@ class Music2Scene: SKScene{
     
     func setButtons(){
         pinkButton.position = CGPoint(x: 50, y: 50)
+        pinkButton.setScale(2)
         addChild(pinkButton)
         pinkButton.zPosition = 1
         
         blueButton.position = CGPoint(x: UIScreen.main.bounds.width - 50, y: 50)
+        blueButton.setScale(2)
         addChild(blueButton)
         blueButton.zPosition = 1
     }
     
-    func setGoodArea(){
+    func setGreatArea(){
         let rectangle = SKShapeNode(rectOf: CGSize(width: 90, height: 90))
         rectangle.fillColor = .gray
-        rectangle.position = CGPoint(x: UIScreen.main.bounds.width/2, y: 45)
+        rectangle.position = CGPoint(x: 160, y: 300)
+        greatArea = rectangle
+        addChild(greatArea)
+        greatArea.zPosition = 1
+    }
+    
+    func setGoodArea(){
+        let rectangle = SKShapeNode(rectOf: CGSize(width: 140, height: 90))
+        rectangle.fillColor = .darkGray
+        rectangle.position = CGPoint(x: 160, y: 300)
         goodArea = rectangle
         addChild(goodArea)
-        goodArea.zPosition = 1
+        goodArea.zPosition = 0.9
     }
     
     func setFinalArea(){
-        let rectangle = SKShapeNode(rectOf: CGSize(width: 1, height: 90))
-        rectangle.fillColor = .clear
-        rectangle.strokeColor = .clear
-        rectangle.position = CGPoint(x: UIScreen.main.bounds.width/2, y: 45)
+        let rectangle = SKShapeNode(rectOf: CGSize(width: 60, height: 90))
+        rectangle.fillColor = .yellow
+        rectangle.strokeColor = .yellow
+        rectangle.position = CGPoint(x: 90, y: 300)
         finalArea = rectangle
         addChild(finalArea)
-        finalArea.zPosition = 1
+        finalArea.zPosition = 100
+
     }
     
     func setLabel(){
@@ -130,7 +149,7 @@ class Music2Scene: SKScene{
         feedbackLabel.isUserInteractionEnabled = false
         feedbackLabel.fontColor = .black
         feedbackLabel.fontSize = 30
-        addChild(feedbackLabel)
+//        addChild(feedbackLabel)
     }
     
     // MARK: Update
@@ -138,18 +157,19 @@ class Music2Scene: SKScene{
     override func update(_ currentTime: TimeInterval) {
         calculateTime(currentTime: currentTime)
         
+        checkFinalAreaCollision()
+        
         if gameSecond >= musicStartDelay && !startMusic{
             startMusic = true
             self.playSound("twoLane", "wav")
         }
         
-        if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat)){
+        //Aqui eu to antecipando o spawn das notas
+        if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat * 3 + 0.3)){
             play = true
             
             noteGenerator()
         }
-        
-        checkFinalAreaCollision()
         
         if gameData?.gameState == .menu{
             gameData!.menu.gameData = gameData
@@ -161,16 +181,43 @@ class Music2Scene: SKScene{
     // MARK: Touch began
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let touch = touches.first?.location(in: self)
         
-        if pinkButton.frame.contains(touch!) {
-            locationNote(type: .pinkType)
+        for touch in touches{
+            
+            if blueButton.frame.contains(touch.location(in: self)){
+                blueButtonClicked = true
+            }
+            if pinkButton.frame.contains(touch.location(in: self)){
+                pinkButtonClicked = true
+            }
+            
+            if pinkButtonClicked && blueButtonClicked {
+                print("dois")
+                locationNote(type: .blueAndPinkType)
+            }
+            
         }
-        if blueButton.frame.contains(touch!) {
-            locationNote(type: .blueType)
-        }
+    
     }
     
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        if pinkButtonClicked && !blueButtonClicked{
+            print("rosa")
+            locationNote(type: .pinkType)
+            
+        }
+        else if blueButtonClicked && !pinkButtonClicked{
+            print("azu")
+            locationNote(type: .blueType)
+            
+        }
+        
+        blueButtonClicked = false
+        pinkButtonClicked = false
+        
+    }
+
     // MARK: Note generator
     
     func noteGenerator(){
@@ -302,17 +349,17 @@ class Music2Scene: SKScene{
                 if spawnBeat_1_5{
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 1.5")
-                    renderNote(type:.blueType)
+                    renderNote(type:.pinkType)
                 }
             case 2:
                 if spawnBeat_2{
-                    renderNote(type:.blueType)
+                    renderNote(type:.blueAndPinkType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 2")
                 }
             case 2.5:
                 if spawnBeat_2_5{
-                    renderNote(type:.blueType)
+                    renderNote(type:.pinkType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 2.5")
                 }
@@ -324,19 +371,19 @@ class Music2Scene: SKScene{
                 }
             case 3.5:
                 if spawnBeat_3_5{
-                    renderNote(type:.blueType)
+                    renderNote(type:.blueAndPinkType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 3.5")
                 }
             case 4:
                 if spawnBeat_4{
-                    renderNote(type:.blueType)
+                    renderNote(type:.pinkType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 4")
                 }
             case 4.5:
                 if spawnBeat_4_5{
-                    renderNote(type:.blueType)
+                    renderNote(type:.pinkType)
                     //          print("beatCounter: \(beatCounter)")
                     //          print("spawn 4.5")
                 }
@@ -362,7 +409,7 @@ class Music2Scene: SKScene{
     
     func renderNote(type: colorType){
         gameData?.createNFactory(factory: NoteFactory(), type: type)
-        if let notes = (type == .pinkType ? gameData?.pinkNotes : gameData?.blueNotes){
+        if let notes = (type == .pinkType ? gameData?.pinkNotes : type == .blueType ? gameData?.blueNotes : gameData?.blueAndPinkNotes){
             addChild(notes.last!.node)
         }
     }
@@ -370,60 +417,100 @@ class Music2Scene: SKScene{
     func destroyNote(type: colorType){
         if type == .pinkType{
             if gameData?.pinkNotes != nil{
+//                print("deletou")
                 gameData?.pinkNotes.first?.node.removeFromParent()
                 gameData?.pinkNotes.removeFirst()
             }
-        }else{
+            
+        }else if type == .blueType{
             if gameData?.blueNotes != nil{
+//                print("deletou")
                 gameData?.blueNotes.first?.node.removeFromParent()
                 gameData?.blueNotes.removeFirst()
+            }
+        }
+        else{
+            if gameData?.blueAndPinkNotes != nil {
+                gameData?.blueAndPinkNotes.first?.node.removeFromParent()
+                gameData?.blueAndPinkNotes.removeFirst()
             }
         }
         
     }
     
-    func labelAnimation(){
+    func labelAnimation(_ text: String){
+        
+        let feedbackLabelClone: SKLabelNode = SKLabelNode()
+        feedbackLabelClone.text = text
+        feedbackLabelClone.color =  text == "Great!" ? .green : text == "Good!" ? .yellow : .black
+        
+        feedbackLabelClone.position = CGPoint(x: 350, y: 100)
+        feedbackLabelClone.zPosition = 10
+        feedbackLabelClone.isUserInteractionEnabled = false
+        feedbackLabelClone.fontColor = .black
+        feedbackLabelClone.fontSize = 30
+        
         let action0 = SKAction.fadeIn(withDuration: 0)
-        let action = SKAction.moveTo(y: 120, duration: 0.5)
+        let action = SKAction.moveTo(y: 150, duration: 0.2)
         let action2 = SKAction.fadeOut(withDuration: 0.1)
-        let action3 = SKAction.moveTo(y: 100, duration: 0)
-        let sequence = SKAction.sequence([action0,action, action2, action3])
-        feedbackLabel.run(sequence)
+        let action4 = SKAction.removeFromParent()
+        let sequence = SKAction.sequence([action0,action, action2,action4])
+        addChild(feedbackLabelClone)
+        feedbackLabelClone.run(sequence)
+        
     }
     
     func locationNote(type: colorType){
-        if let notes = (type == .pinkType ? gameData?.pinkNotes : gameData?.blueNotes) {
+        var text = ""
+        if let notes = (type == .pinkType ? gameData?.pinkNotes : type == .blueType ? gameData?.blueNotes : gameData?.blueAndPinkNotes) {
             if let note = notes.first as? Note{
-                if goodArea.frame.contains(note.node.position){
+                if greatArea.frame.contains(note.node.position) && goodArea.frame.contains(note.node.position){
                     destroyNote(type: type)
-                    feedbackLabel.text = "Good!"
-                    
+                    text = "Great!"
                 }
-                else{
+                else if !greatArea.frame.contains(note.node.position) && goodArea.frame.contains(note.node.position){
                     destroyNote(type: type)
-                    feedbackLabel.text = "missed..."
+                    text = "Good!"
                 }
-                labelAnimation()
+                else if !greatArea.frame.contains(note.node.position) && !goodArea.frame.contains(note.node.position){
+//                    destroyNote(type: type)
+                    text = "missed..."
+                }
+                labelAnimation(text)
             }
         }
     }
     
     func checkFinalAreaCollision(){
+        var text = ""
         if let notes = gameData?.pinkNotes{
             if let note = notes.first as? Note{
                 if finalArea.frame.contains(note.node.position){
                     destroyNote(type: note.type)
-                    feedbackLabel.text = "missed..."
-                    labelAnimation()
+                    text = "missed..."
+                    labelAnimation(text)
                 }
+                
             }
         }
+        
         if let notes = gameData?.blueNotes{
             if let note = notes.first as? Note{
                 if finalArea.frame.contains(note.node.position){
                     destroyNote(type: note.type)
-                    feedbackLabel.text = "missed..."
-                    labelAnimation()
+                    text = "missed..."
+                    labelAnimation(text)
+                }
+                
+            }
+        }
+        
+        if let notes = gameData?.blueAndPinkNotes{
+            if let note = notes.first as? Note{
+                if finalArea.frame.contains(note.node.position){
+                    destroyNote(type: note.type)
+                    text = "missed..."
+                    labelAnimation(text)
                 }
             }
         }
