@@ -181,7 +181,7 @@ class Music2Scene: SKScene{
         }
         
         //Aqui eu to antecipando o spawn das notas
-        if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat * 2)){
+        if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat * 3)){
         
             play = true
             
