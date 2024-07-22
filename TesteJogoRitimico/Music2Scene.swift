@@ -49,6 +49,22 @@ class Music2Scene: SKScene{
     
     var pinkButtonClicked: Bool = false
     var blueButtonClicked: Bool = false
+  
+    var finalBeat: Int = 40
+    var conductorTime: [Int] = [0,5,9,13,17,21,25,29,33]
+    var conductorTimeIndex: Int = 0
+    var conductorBeats: [Bool] = [true,true,true,true,true,false,true,true
+                                  ,true,false,true,true,false,false,false,false
+                                  ,true,true,true,true,true,false,true,true
+                                  ,true,false,true,true,false,false,false,false
+                                  ,true,true,true,true,true,true,false,false
+                                  ,false,false,true,true,true,true,false,false
+                                  ,true,true,true,true,false,false,true,true
+                                  ,true,true,true,true,false,false,true,true
+                                  ,false,false,false,false,false,false,false,false]
+    var conductorBeatsIndex: Int = 0
+    
+    var initialTimer: Timer?
     
     func playSound(_ nome: String, _ ext: String) {
         guard let url = Bundle.main.url(forResource: nome, withExtension: ext) else { return }
@@ -166,6 +182,7 @@ class Music2Scene: SKScene{
         
         //Aqui eu to antecipando o spawn das notas
         if !play && gameSecond >= (musicStartDelay - Double(secondsPerBeat * 3 + 0.3)){
+        
             play = true
             
             noteGenerator()
@@ -227,8 +244,6 @@ class Music2Scene: SKScene{
     }
     
     func conductorNotes(){
-        var initialTimer: Timer?
-        
         initialTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(secondsPerBeat / 2), repeats: true) { [self] timer in
             beatCounter += 0.5
             currentMeasure += 0.5
@@ -236,161 +251,56 @@ class Music2Scene: SKScene{
                 self.currentMeasure = 1
             }
             
-            if beatCounter > 0{
-                spawnBeat_1 = true
-                spawnBeat_1_5 = true
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = true
-                spawnBeat_3_5 = false
-                spawnBeat_4 = true
-                spawnBeat_4_5 = true
-                //        print(spawnBeat_1)
-                //        print(spawnBeat_1_5)
-                //        print(spawnBeat_2)
-                //        print(spawnBeat_2_5)
-                //        print(spawnBeat_3)
-                //        print(spawnBeat_3_5)
-                //        print(spawnBeat_4)
-                //        print(spawnBeat_4_5)
-            }
-            if beatCounter >= 5 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = false
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = false
-                spawnBeat_3_5 = false
-                spawnBeat_4 = false
-                spawnBeat_4_5 = false
-            }
-            if beatCounter >= 9 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = true
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = true
-                spawnBeat_3_5 = false
-                spawnBeat_4 = true
-                spawnBeat_4_5 = true
-            }
-            if beatCounter >= 13 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = false
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = false
-                spawnBeat_3_5 = false
-                spawnBeat_4 = false
-                spawnBeat_4_5 = false
-            }
-            if beatCounter >= 17 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = true
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = true
-                spawnBeat_3_5 = true
-                spawnBeat_4 = false
-                spawnBeat_4_5 = false
-            }
-            if beatCounter >= 21 {
-                spawnBeat_1 = false
-                spawnBeat_1_5 = false
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = true
-                spawnBeat_3_5 = true
-                spawnBeat_4 = false
-                spawnBeat_4_5 = false
-            }
-            if beatCounter >= 25 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = true
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = false
-                spawnBeat_3_5 = false
-                spawnBeat_4 = true
-                spawnBeat_4_5 = true
-            }
-            if beatCounter >= 29 {
-                spawnBeat_1 = true
-                spawnBeat_1_5 = true
-                spawnBeat_2 = true
-                spawnBeat_2_5 = true
-                spawnBeat_3 = false
-                spawnBeat_3_5 = false
-                spawnBeat_4 = true
-                spawnBeat_4_5 = true
-            }
-            //Nao produz nota a partir daqui mesmo com a musica ainda tocando
-            if beatCounter >= 33 {
-                spawnBeat_1 = false
-                spawnBeat_1_5 = false
-                spawnBeat_2 = false
-                spawnBeat_2_5 = false
-                spawnBeat_3 = false
-                spawnBeat_3_5 = false
-                spawnBeat_4 = false
-                spawnBeat_4_5 = false
-            }
             if beatCounter >= 40 {
                 resetGame()
             }
+            
+            if conductorTime.count > (conductorTimeIndex + 1){
+                if Int(beatCounter) >= conductorTime[conductorTimeIndex + 1]{
+                    conductorTimeIndex += 1
+                    conductorBeatsIndex += 8
+                }
+            }
+    
             switch currentMeasure{
             case 1:
-                if spawnBeat_1{
-                    //          print("beatCounter: \(beatCounter)")
-                    //          print("spawn 1")
+                if conductorBeats[conductorBeatsIndex]{
                     renderNote(type:.blueType)
                 }
             case 1.5:
-                if spawnBeat_1_5{
-                    //          print("beatCounter: \(beatCounter)")
-                    //          print("spawn 1.5")
-                    renderNote(type:.pinkType)
+              
+                if conductorBeats[conductorBeatsIndex + 1]{
+                    renderNote(type:.blueType)
                 }
             case 2:
-                if spawnBeat_2{
-                    renderNote(type:.blueAndPinkType)
-                    //          print("beatCounter: \(beatCounter)")
-                    //          print("spawn 2")
+                if conductorBeats[conductorBeatsIndex + 2]{
+                    renderNote(type:.blueType)
                 }
             case 2.5:
-                if spawnBeat_2_5{
-                    renderNote(type:.pinkType)
-                    //          print("beatCounter: \(beatCounter)")
-                    //          print("spawn 2.5")
+                if conductorBeats[conductorBeatsIndex + 3]{
+                    renderNote(type:.blueType)
+
                 }
             case 3:
-                if spawnBeat_3{
+                if conductorBeats[conductorBeatsIndex + 4]{
                     renderNote(type:.blueType)
-                    //          print("beatCounter: \(beatCounter)")
-                    //          print("spawn 3")
                 }
             case 3.5:
-                if spawnBeat_3_5{
-                    renderNote(type:.blueAndPinkType)
-                    //          print("beatCounter: \(beatCounter)")
-                    //          print("spawn 3.5")
+
+                if conductorBeats[conductorBeatsIndex + 5]{
+                    renderNote(type:.blueType)
                 }
             case 4:
-                if spawnBeat_4{
-                    renderNote(type:.pinkType)
-                    //          print("beatCounter: \(beatCounter)")
-                    //          print("spawn 4")
+                if conductorBeats[conductorBeatsIndex + 6]{
+                    renderNote(type:.blueType)
                 }
             case 4.5:
-                if spawnBeat_4_5{
-                    renderNote(type:.pinkType)
-                    //          print("beatCounter: \(beatCounter)")
-                    //          print("spawn 4.5")
+                if conductorBeats[conductorBeatsIndex + 7]{
+                    renderNote(type:.blueType)
                 }
             default:
                 break
             }
-            
         }
         
         isRendering = true
@@ -535,5 +445,8 @@ class Music2Scene: SKScene{
         spawnBeat_4_5 = false
         gameData?.objects.removeAll()
         gameData?.gameState = .menu
+        
+        initialTimer?.invalidate()
+        initialTimer = nil
       }
 }
