@@ -92,7 +92,6 @@ class Music2Scene: SKScene{
         setPerfectArea()
         setGoodArea()
         setFinalArea()
-        setLabel()
         secondsPerBeat = 60 / bpm
         
         player?.prepareToPlay()
@@ -102,7 +101,7 @@ class Music2Scene: SKScene{
     // MARK: Set Elements
     
     func setBackground() {
-        backgroundColor = .white
+        backgroundColor = .darkBlue
         
         setVitrola()
         setDiscoBack()
@@ -184,15 +183,6 @@ class Music2Scene: SKScene{
 
     }
     
-    func setLabel(){
-        feedbackLabel.position = CGPoint(x: 350, y: 100)
-        feedbackLabel.zPosition = 10
-        feedbackLabel.isUserInteractionEnabled = false
-        feedbackLabel.fontColor = .black
-        feedbackLabel.fontSize = 30
-
-    }
-    
     // MARK: Update
     
     override func update(_ currentTime: TimeInterval) {
@@ -237,16 +227,16 @@ class Music2Scene: SKScene{
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if pinkButtonClicked && blueButtonClicked {
-            print("dois")
+//            print("dois")
             locationNote(type: .blueAndPinkType)
         }
         else if pinkButtonClicked && !blueButtonClicked{
-            print("rosa")
+//            print("rosa")
             locationNote(type: .pinkType)
             
         }
         else if blueButtonClicked && !pinkButtonClicked{
-            print("azul")
+//            print("azul")
             locationNote(type: .blueType)
         }
         
@@ -370,15 +360,15 @@ class Music2Scene: SKScene{
     
     func labelAnimation(_ text: String){
         
-        let feedbackLabelClone: SKLabelNode = SKLabelNode()
+        let feedbackLabelClone: SKLabelNode = SKLabelNode(fontNamed: "SF Pro Bold")
         feedbackLabelClone.text = text
         feedbackLabelClone.color =  text == "Great!" ? .green : text == "Good!" ? .yellow : .black
         
         feedbackLabelClone.position = CGPoint(x: 350, y: 100)
         feedbackLabelClone.zPosition = 10
         feedbackLabelClone.isUserInteractionEnabled = false
-        feedbackLabelClone.fontColor = .black
-        feedbackLabelClone.fontSize = 30
+        feedbackLabelClone.fontColor = .white
+        feedbackLabelClone.fontSize = 25
         
         let action0 = SKAction.fadeIn(withDuration: 0)
         let action = SKAction.moveTo(y: 150, duration: 0.2)
