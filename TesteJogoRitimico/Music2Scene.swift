@@ -16,7 +16,12 @@ class Music2Scene: SKScene{
     var backgroundNotes: SKSpriteNode = SKSpriteNode(imageNamed: "rectangleBackground")
     var pinkButton: SKSpriteNode = SKSpriteNode(imageNamed: "pinkButton")
     var blueButton: SKSpriteNode = SKSpriteNode(imageNamed: "blueButton")
-    var greatArea: SKShapeNode = SKShapeNode()
+    var DJDesk: SKSpriteNode = SKSpriteNode(imageNamed: "DJDesk")
+    var vitrola = SKSpriteNode(imageNamed: "Vitrola")
+    var agulha = SKSpriteNode(imageNamed: "Agulha")
+    var DiscoCover = SKSpriteNode(imageNamed: "DiscoCover")
+    var DiscoBack = SKSpriteNode(imageNamed: "DiscoBack")
+    var perfectArea: SKShapeNode = SKShapeNode()
     var goodArea: SKShapeNode = SKShapeNode()
     var finalArea: SKShapeNode = SKShapeNode()
     var feedbackLabel: SKLabelNode = SKLabelNode(text: "")
@@ -84,15 +89,14 @@ class Music2Scene: SKScene{
         
         setBackground()
         setButtons()
-        setGreatArea()
+        setPerfectArea()
         setGoodArea()
         setFinalArea()
         setLabel()
-        
         secondsPerBeat = 60 / bpm
         
         player?.prepareToPlay()
-        player?.pause()
+        
     }
     
     // MARK: Set Elements
@@ -100,48 +104,80 @@ class Music2Scene: SKScene{
     func setBackground() {
         backgroundColor = .white
         
-        backgroundNotes.size = CGSize(width: UIScreen.main.bounds.width, height: 90)
-        backgroundNotes.position = CGPoint(x: Int(backgroundNotes.size.width)/2, y: Int(backgroundNotes.size.height)/2)
-        addChild(backgroundNotes)
+        setVitrola()
+        setDiscoBack()
+        setDiscoCover()
+        setDJDesk()
+    }
+    
+    func setDJDesk(){
+        DJDesk.position = CGPoint(x: UIScreen.main.bounds.width/2, y: 50)
+        DJDesk.setScale(1.01)
+        addChild(DJDesk)
         
-        backgroundNotes.zPosition = -10
+        DJDesk.zPosition = -10
+    }
+    
+    func setVitrola(){
+        vitrola.position = CGPoint(x: 130, y: 300)
+        vitrola.zPosition = -1
+        addChild(vitrola)
+        agulha.position = CGPoint(x: 130, y: 300)
+        agulha.zPosition = 2
+        addChild(agulha)
+    }
+    
+    func setDiscoBack(){
+        DiscoBack.position = CGPoint(x: 435, y: 300)
+        DiscoBack.zPosition = -2
+        addChild(DiscoBack)
+    }
+    func setDiscoCover(){
+        DiscoCover.position = CGPoint(x: 770, y: 300)
+        DiscoCover.zPosition = 3
+        addChild(DiscoCover)
     }
     
     func setButtons(){
-        pinkButton.position = CGPoint(x: 50, y: 50)
+        pinkButton.position = CGPoint(x: UIScreen.main.bounds.width - 54, y: 53)
         pinkButton.setScale(2)
+        pinkButton.alpha = 0
         addChild(pinkButton)
         pinkButton.zPosition = 1
         
-        blueButton.position = CGPoint(x: UIScreen.main.bounds.width - 50, y: 50)
+        blueButton.position = CGPoint(x: 47, y: 53)
         blueButton.setScale(2)
+        blueButton.alpha = 0
         addChild(blueButton)
         blueButton.zPosition = 1
     }
     
-    func setGreatArea(){
-        let rectangle = SKShapeNode(rectOf: CGSize(width: 90, height: 90))
-        rectangle.fillColor = .gray
-        rectangle.position = CGPoint(x: 160, y: 300)
-        greatArea = rectangle
-        addChild(greatArea)
-        greatArea.zPosition = 1
+    func setPerfectArea(){
+        let rectangle = SKShapeNode(rectOf: CGSize(width: 47, height: 74))
+        rectangle.fillColor = .green
+        rectangle.alpha = 0
+        rectangle.position = CGPoint(x: 130, y: 300)
+        perfectArea = rectangle
+        addChild(perfectArea)
+        perfectArea.zPosition = 1
     }
+   
     
     func setGoodArea(){
-        let rectangle = SKShapeNode(rectOf: CGSize(width: 140, height: 90))
-        rectangle.fillColor = .darkGray
-        rectangle.position = CGPoint(x: 160, y: 300)
+        let rectangle = SKShapeNode(rectOf: CGSize(width: 37, height: 74))
+        rectangle.fillColor = .yellow
+        rectangle.alpha = 0
+        rectangle.position = CGPoint(x: 185.5, y: 300)
         goodArea = rectangle
         addChild(goodArea)
         goodArea.zPosition = 0.9
     }
     
     func setFinalArea(){
-        let rectangle = SKShapeNode(rectOf: CGSize(width: 60, height: 90))
-        rectangle.fillColor = .yellow
-        rectangle.strokeColor = .yellow
-        rectangle.position = CGPoint(x: 90, y: 300)
+        let rectangle = SKShapeNode(rectOf: CGSize(width: 22, height: 74))
+        rectangle.fillColor = .red
+        rectangle.alpha = 0
+        rectangle.position = CGPoint(x: 82, y: 300)
         finalArea = rectangle
         addChild(finalArea)
         finalArea.zPosition = 100
@@ -154,7 +190,7 @@ class Music2Scene: SKScene{
         feedbackLabel.isUserInteractionEnabled = false
         feedbackLabel.fontColor = .black
         feedbackLabel.fontSize = 30
-//        addChild(feedbackLabel)
+
     }
     
     // MARK: Update
@@ -358,16 +394,16 @@ class Music2Scene: SKScene{
         var text = ""
         if let notes = (type == .pinkType ? gameData?.pinkNotes : type == .blueType ? gameData?.blueNotes : gameData?.blueAndPinkNotes) {
             if let note = notes.first as? Note{
-                if greatArea.frame.contains(note.node.position) && goodArea.frame.contains(note.node.position){
+                
+                if perfectArea.frame.contains(note.node.position) && !goodArea.frame.contains(note.node.position){
                     destroyNote(type: type)
-                    text = "Great!"
+                    text = "Perfect!"
                 }
-                else if !greatArea.frame.contains(note.node.position) && goodArea.frame.contains(note.node.position){
+                else if goodArea.frame.contains(note.node.position){
                     destroyNote(type: type)
                     text = "Good!"
                 }
-                else if !greatArea.frame.contains(note.node.position) && !goodArea.frame.contains(note.node.position){
-//                    destroyNote(type: type)
+                else if !perfectArea.frame.contains(note.node.position) && !goodArea.frame.contains(note.node.position){
                     text = "missed..."
                 }
                 labelAnimation(text)
