@@ -17,7 +17,7 @@ class Note: NoteObject{
         self.position = position
         self.type = type
         
-        self.node = SKSpriteNode(imageNamed: type == .blueType ? "blueNote" : type == .pinkType ? "pinkNote" : "blueAndPinkNote")
+        self.node = SKSpriteNode(imageNamed: type == .blueType ? "DiscoBlue" : type == .pinkType ? "DiscoPink" : "blueAndPinkNote")
 //        self.node.fillColor = type == .blueType ? .gameBlue :type == .pinkType ? .gamePink : .purple
         node.zPosition = 2
         node.position = position
