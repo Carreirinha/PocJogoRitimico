@@ -306,7 +306,7 @@ class Music2Scene: SKScene{
                 }
             case 4.5:
                 if conductorBeats[conductorBeatsIndex + 7]{
-                    renderNote(type:.blueAndPinkType)
+                    renderNote(type:.pinkType)
                 }
             default:
                 break
