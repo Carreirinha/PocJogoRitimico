@@ -385,16 +385,19 @@ class Music2Scene: SKScene{
         if let notes = (type == .pinkType ? gameData?.pinkNotes : type == .blueType ? gameData?.blueNotes : gameData?.blueAndPinkNotes) {
             if let note = notes.first as? Note{
                 
-                if perfectArea.frame.contains(note.node.position) && !goodArea.frame.contains(note.node.position){
-                    destroyNote(type: type)
-                    text = "Perfect!"
-                }
-                else if goodArea.frame.contains(note.node.position){
+                if goodArea.frame.contains(note.node.position){
                     destroyNote(type: type)
                     text = "Good!"
+                    print("destrui uma good")
                 }
-                else if !perfectArea.frame.contains(note.node.position) && !goodArea.frame.contains(note.node.position){
+                else if perfectArea.frame.contains(note.node.position){
+                    destroyNote(type: type)
+                    text = "Perfect!"
+                    print("destrui uma perfect")
+                }
+                else{
                     text = "missed..."
+                    print("perdeu")
                 }
                 labelAnimation(text)
             }
