@@ -21,4 +21,8 @@ enum colorType {
     case blueType
     case pinkType
     case blueAndPinkType
+    
+    case blueUpType
+    case pinkUpType
+    case blueAndPinkUpType
 }

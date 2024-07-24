@@ -43,6 +43,11 @@ import UIKit
     var pinkNotes: [NoteObject] = []
     var blueNotes: [NoteObject] = []
     var blueAndPinkNotes: [NoteObject] = []
+    
+    var blueUpNotes: [NoteObject] = []
+    var pinkUpNotes: [NoteObject] = []
+    var blueAndPinkUpNotes: [NoteObject] = []
+    
     func createNote(type: colorType){
         createNFactory(factory: NoteFactory(), type: type)
     }
