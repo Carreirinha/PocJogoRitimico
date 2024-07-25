@@ -9,6 +9,7 @@ import Foundation
 import SpriteKit
 import AVFoundation
 import UIKit
+import CoreMotion
 
 class Music2Scene: SKScene{
     var gameData: GameData?
@@ -60,6 +61,17 @@ class Music2Scene: SKScene{
     
     var initialTimer: Timer?
     
+    var point1: CGPoint = CGPoint(x: 0, y: 0)
+    var dragStage: DragStages = .inactive
+    var touchLocation: TouchLocation?
+    
+    let motionManager = CMMotionManager()
+    var updatedFirstMotionVariables: Bool = false
+    var checkedNoteTiltingDevice: Bool = false
+    var firstPitch: Double = 0
+    var firstRoll: Double = 0
+    var firstYaw: Double = 0
+    
     func playSound(_ nome: String, _ ext: String) {
         guard let url = Bundle.main.url(forResource: nome, withExtension: ext) else { return }
         
@@ -86,6 +98,11 @@ class Music2Scene: SKScene{
     
     func startGame(){
         view?.isMultipleTouchEnabled = true
+        
+        motionManager.deviceMotionUpdateInterval = 1.0 / 60.0
+        motionManager.showsDeviceMovementDisplay = true
+        
+//        setCoreMotion()
         
         setBackground()
         setButtons()
@@ -183,6 +200,33 @@ class Music2Scene: SKScene{
 
     }
     
+    func setCoreMotion(){
+        motionManager.startDeviceMotionUpdates(to: OperationQueue()) { [self] motion, error in
+            if let data = motion {
+                if !updatedFirstMotionVariables{
+                    updatedFirstMotionVariables = true
+                    firstPitch = data.attitude.pitch.toDegrees()
+                    firstRoll = data.attitude.roll.toDegrees()
+                    firstYaw = data.attitude.yaw.toDegrees()
+                }
+                let pitch = data.attitude.pitch.toDegrees()
+                let roll = data.attitude.roll.toDegrees()
+                let yaw = data.attitude.yaw.toDegrees()
+                
+                if abs(roll) >= abs(firstRoll) - 5 && abs(roll) <= abs(firstRoll) + 5 {
+                    checkedNoteTiltingDevice = false
+                }
+                
+                if (abs(roll) <= abs(firstRoll) - 25 || abs(roll) >= abs(firstRoll) + 25) && !checkedNoteTiltingDevice{
+                    checkedNoteTiltingDevice = true
+                    print("tilt")
+//                    locationNote(type: .blueAndPinkUpType)
+                }
+//                print("Pitch: \(pitch), roll: \(roll), yaw: \(yaw).")
+            }
+        }
+    }
+    
     // MARK: Update
     
     override func update(_ currentTime: TimeInterval) {
@@ -214,29 +258,73 @@ class Music2Scene: SKScene{
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
+        let touch = touches.first?.location(in: self)
+        self.point1 = touch!
+        
         for touch in touches{
             
             if blueButton.frame.contains(touch.location(in: self)){
                 blueButtonClicked = true
+                touchLocation = .blueButton
+                dragStage = .firstDrag
             }
             if pinkButton.frame.contains(touch.location(in: self)){
                 pinkButtonClicked = true
+                touchLocation = .pinkButton
+                dragStage = .firstDrag
+            }
+            
+            if blueButtonClicked && pinkButtonClicked {
+                dragStage = .firstDrag
+                touchLocation = .blueAndPinkButton
             }
         }
     }
     
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch = touches.first?.location(in: self)
+        
+        if dragStage == .firstDrag {
+            if touch!.y >= point1.y + 30 && (touch!.x >= point1.x - 30 && touch!.x <= point1.x + 30) {
+//                print("foi pra cima, 1 swipe")
+                switch touchLocation {
+                case .blueButton:
+                    print("azul pra cima")
+                    locationNote(type: .blueUpType)
+                    dragStage = .inactive
+                    blueButtonClicked = false
+                case .pinkButton:
+                    print("rosa pra cima")
+                    locationNote(type: .pinkUpType)
+                    dragStage = .inactive
+                    pinkButtonClicked = false
+                case .blueAndPinkButton:
+                    print("azul e rosa pra cima")
+                    locationNote(type: .blueAndPinkUpType)
+                    dragStage = .inactive
+                    blueButtonClicked = false
+                    pinkButtonClicked = false
+                case nil:
+                    print("")
+                }
+            }
+        }
+        
+    }
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        dragStage = .inactive
+        
         if pinkButtonClicked && blueButtonClicked {
-//            print("dois")
+            print("dois")
             locationNote(type: .blueAndPinkType)
         }
         else if pinkButtonClicked && !blueButtonClicked{
-//            print("rosa")
+            print("rosa")
             locationNote(type: .pinkType)
-            
         }
         else if blueButtonClicked && !pinkButtonClicked{
-//            print("azul")
+            print("azul")
             locationNote(type: .blueType)
         }
         
@@ -284,7 +372,7 @@ class Music2Scene: SKScene{
                 }
             case 2:
                 if conductorBeats[conductorBeatsIndex + 2]{
-                    renderNote(type:.blueType)
+                    renderNote(type:.blueUpType)
                 }
             case 2.5:
                 if conductorBeats[conductorBeatsIndex + 3]{
@@ -293,7 +381,7 @@ class Music2Scene: SKScene{
                 }
             case 3:
                 if conductorBeats[conductorBeatsIndex + 4]{
-                    renderNote(type:.pinkType)
+                    renderNote(type:.blueAndPinkType)
                 }
             case 3.5:
 
@@ -306,7 +394,7 @@ class Music2Scene: SKScene{
                 }
             case 4.5:
                 if conductorBeats[conductorBeatsIndex + 7]{
-                    renderNote(type:.pinkType)
+                    renderNote(type:.pinkUpType)
                 }
             default:
                 break
@@ -329,32 +417,45 @@ class Music2Scene: SKScene{
     
     func renderNote(type: colorType){
         gameData?.createNFactory(factory: NoteFactory(), type: type)
-        if let notes = (type == .pinkType ? gameData?.pinkNotes : type == .blueType ? gameData?.blueNotes : gameData?.blueAndPinkNotes){
+        if let notes = (type == .pinkType ? gameData?.pinkNotes : type == .blueType ? gameData?.blueNotes : type == .blueAndPinkType ? gameData?.blueAndPinkNotes : type == .blueUpType ? gameData?.blueUpNotes : type == .pinkUpType ? gameData?.pinkUpNotes : gameData?.blueAndPinkUpNotes){
             addChild(notes.last!.node)
         }
     }
     
     func destroyNote(type: colorType){
-        if type == .pinkType{
+        switch type{
+        case .pinkType:
             if gameData?.pinkNotes != nil{
-//                print("deletou")
                 gameData?.pinkNotes.first?.node.removeFromParent()
                 gameData?.pinkNotes.removeFirst()
             }
-            
-        }else if type == .blueType{
+        case .blueType:
             if gameData?.blueNotes != nil{
-//                print("deletou")
                 gameData?.blueNotes.first?.node.removeFromParent()
                 gameData?.blueNotes.removeFirst()
             }
-        }
-        else{
+        case .blueAndPinkType:
             if gameData?.blueAndPinkNotes != nil {
                 gameData?.blueAndPinkNotes.first?.node.removeFromParent()
                 gameData?.blueAndPinkNotes.removeFirst()
             }
+        case .blueUpType:
+            if gameData?.blueUpNotes != nil {
+                gameData?.blueUpNotes.first?.node.removeFromParent()
+                gameData?.blueUpNotes.removeFirst()
+            }
+        case .pinkUpType:
+            if gameData?.pinkUpNotes != nil {
+                gameData?.pinkUpNotes.first?.node.removeFromParent()
+                gameData?.pinkUpNotes.removeFirst()
+            }
+        case .blueAndPinkUpType:
+            if gameData?.blueAndPinkUpNotes != nil {
+                gameData?.blueAndPinkUpNotes.first?.node.removeFromParent()
+                gameData?.blueAndPinkUpNotes.removeFirst()
+            }
         }
+        
         
     }
     
@@ -382,7 +483,7 @@ class Music2Scene: SKScene{
     
     func locationNote(type: colorType){
         var text = ""
-        if let notes = (type == .pinkType ? gameData?.pinkNotes : type == .blueType ? gameData?.blueNotes : gameData?.blueAndPinkNotes) {
+        if let notes = (type == .pinkType ? gameData?.pinkNotes : type == .blueType ? gameData?.blueNotes : type == .blueAndPinkType ? gameData?.blueAndPinkNotes : type == .blueUpType ? gameData?.blueUpNotes : type == .pinkUpType ? gameData?.pinkUpNotes : gameData?.blueAndPinkUpNotes) {
             if let note = notes.first as? Note{
                 
                 if goodArea.frame.contains(note.node.position){
@@ -406,6 +507,7 @@ class Music2Scene: SKScene{
     
     func checkFinalAreaCollision(){
         var text = ""
+        
         if let notes = gameData?.pinkNotes{
             if let note = notes.first as? Note{
                 if finalArea.frame.contains(note.node.position){
@@ -429,6 +531,36 @@ class Music2Scene: SKScene{
         }
         
         if let notes = gameData?.blueAndPinkNotes{
+            if let note = notes.first as? Note{
+                if finalArea.frame.contains(note.node.position){
+                    destroyNote(type: note.type)
+                    text = "missed..."
+                    labelAnimation(text)
+                }
+            }
+        }
+        
+        if let notes = gameData?.blueUpNotes{
+            if let note = notes.first as? Note{
+                if finalArea.frame.contains(note.node.position){
+                    destroyNote(type: note.type)
+                    text = "missed..."
+                    labelAnimation(text)
+                }
+            }
+        }
+        
+        if let notes = gameData?.pinkUpNotes{
+            if let note = notes.first as? Note{
+                if finalArea.frame.contains(note.node.position){
+                    destroyNote(type: note.type)
+                    text = "missed..."
+                    labelAnimation(text)
+                }
+            }
+        }
+        
+        if let notes = gameData?.blueAndPinkUpNotes{
             if let note = notes.first as? Note{
                 if finalArea.frame.contains(note.node.position){
                     destroyNote(type: note.type)

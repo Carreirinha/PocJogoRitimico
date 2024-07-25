@@ -55,7 +55,7 @@ import UIKit
         
         let note: NoteObject = factory.createNoteObject(position: CGPoint(x: UIScreen.main.bounds.width-100 , y: 300), type: type, travelTime: 2)
         
-        type == .blueType ? blueNotes.append(note) : type == .pinkType ? pinkNotes.append(note) : blueAndPinkNotes.append(note)
+        type == .blueType ? blueNotes.append(note) : type == .pinkType ? pinkNotes.append(note) : type == .blueAndPinkType ? blueAndPinkNotes.append(note) : type == .blueUpType ? blueUpNotes.append(note) : type == .pinkUpType ? pinkUpNotes.append(note) : blueAndPinkUpNotes.append(note)
         
         //notes.append(note)
     }
